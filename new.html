@@ -13,7 +13,7 @@
     <p id="walletBalance"></p>
     <p id="bnbEthBalance"></p>
     <p id="websiteTokenBalance"></p>
-    <p id="bcCourseTokenBalance"></p> <!-- Added BC_course token balance display -->
+    <p id="bcCourseTokenBalance"></p>
 
     <h2>Send Token</h2>
     <form id="sendTokenForm">
@@ -37,12 +37,10 @@
             if (typeof window.ethers !== 'undefined') {
                 const ethers = window.ethers;
 
-                // Token contract addresses and ABI
-                const bnbEthTokenAddress = '0x9031FFe14632e5954AB4aC45049C1C0636fD3681'; // Replace with your BNB ETH token address
-                const websiteTokenAddress = '0x2174A5Dc77e655b4C89A0562C610876F23C81F39'; // Your new ERC20 token address
-                const bcCourseTokenAddress = '0x45456700589bBD564904B8b535d1EAFA9C54dd5e'; // Your BC_course ERC20 token address
+                const bnbEthTokenAddress = '0x9031FFe14632e5954AB4aC45049C1C0636fD3681';
+                const websiteTokenAddress = '0x2174A5Dc77e655b4C89A0562C610876F23C81F39';
+                const bcCourseTokenAddress = '0x45456700589bBD564904B8b535d1EAFA9C54dd5e';
 
-                // ERC20 Token ABI fragment
                 const tokenABI = [
                     "function balanceOf(address owner) view returns (uint256)",
                     "function transfer(address to, uint256 amount) returns (bool)"
@@ -56,25 +54,21 @@
                             const signer = provider.getSigner();
                             const account = await signer.getAddress();
                             document.getElementById('walletAddress').innerText = `Connected Wallet: ${account}`;
-                            
-                            // Get ETH balance
+
                             const balance = await provider.getBalance(account);
                             const balanceInEther = ethers.utils.formatEther(balance);
                             document.getElementById('walletBalance').innerText = `ETH Balance: ${balanceInEther} ETH`;
 
-                            // Get BNB ETH token balance
                             const bnbEthTokenContract = new ethers.Contract(bnbEthTokenAddress, tokenABI, provider);
                             const bnbEthBalance = await bnbEthTokenContract.balanceOf(account);
                             const bnbEthBalanceInEther = ethers.utils.formatEther(bnbEthBalance);
                             document.getElementById('bnbEthBalance').innerText = `BNB ETH Balance: ${bnbEthBalanceInEther} BNB ETH`;
 
-                            // Get Website token balance
                             const websiteTokenContract = new ethers.Contract(websiteTokenAddress, tokenABI, provider);
                             const websiteTokenBalance = await websiteTokenContract.balanceOf(account);
                             const websiteTokenBalanceInEther = ethers.utils.formatEther(websiteTokenBalance);
                             document.getElementById('websiteTokenBalance').innerText = `Website Token Balance: ${websiteTokenBalanceInEther} Website`;
 
-                            // Get BC_course token balance
                             const bcCourseTokenContract = new ethers.Contract(bcCourseTokenAddress, tokenABI, provider);
                             const bcCourseTokenBalance = await bcCourseTokenContract.balanceOf(account);
                             const bcCourseTokenBalanceInEther = ethers.utils.formatEther(bcCourseTokenBalance);
@@ -96,7 +90,7 @@
                             const provider = new ethers.providers.Web3Provider(window.ethereum);
                             const signer = provider.getSigner();
                             const recipient = document.getElementById('recipientAddress').value;
-                            const amount = ethers.utils.parseUnits(document.getElementById('amount').value, 18); // Assuming 18 decimal places
+                            const amount = ethers.utils.parseUnits(document.getElementById('amount').value, 18);
                             const selectedToken = document.getElementById('tokenSelect').value;
 
                             let tokenAddress;
@@ -111,10 +105,9 @@
 
                             const tokenContract = new ethers.Contract(tokenAddress, tokenABI, signer);
                             const tx = await tokenContract.transfer(recipient, amount);
-                            await tx.wait(); // Wait for transaction to be mined
+                            await tx.wait();
 
                             alert('Transaction successful!');
-                            // Refresh token balances
                             const websiteTokenBalance = await new ethers.Contract(websiteTokenAddress, tokenABI, provider).balanceOf(await signer.getAddress());
                             const websiteTokenBalanceInEther = ethers.utils.formatEther(websiteTokenBalance);
                             document.getElementById('websiteTokenBalance').innerText = `Website Token Balance: ${websiteTokenBalanceInEther} Website`;
